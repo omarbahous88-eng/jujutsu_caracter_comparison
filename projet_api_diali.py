@@ -19,6 +19,7 @@ class caracter(BaseModel):
     type : str
     attack : int 
     defence : int 
+    image_url: str
 caracters=[caracter(HP=3000,name="Gojo",type="sorcer",attack=5000,defence=4000)]
 @app.get("/caracters/")
 def readcaracters():
