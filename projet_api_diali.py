@@ -1,16 +1,15 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-app =FastAPI()
+
 from fastapi.middleware.cors import CORSMiddleware
+app = FastAPI(title="Jujutsu Kaisen Character Manager")
+ 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://monfrontend.com",
-        "https://app.monsite.com"
-    ],  # Liste explicite des domaines autorisés
+    allow_origins=["https://jujutsu-caracter-comparison.onrender.com"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],  # Méthodes spécifiques
-    allow_headers=["Content-Type", "Authorization", "X-Requested-With"],  # En-têtes nécessaires
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 class caracter(BaseModel):
