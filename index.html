@@ -198,7 +198,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
     <div class="name-row">
       <div class="field">
         <label>Name</label>
-        <input id="f-name" type="text" placeholder="Gojo Satoru" oninput="onNameType()"/>
+        <input id="f-name" type="text" placeholder="Gojo Satoru" onkeydown="onNameKey(event)"/>
       </div>
       <button class="btn-search" onclick="triggerSearch()">🔍</button>
     </div>
@@ -254,11 +254,12 @@ let searchTimer = null;
    IMAGE SEARCH — Jikan (MyAnimeList API)
    ══════════════════════════════════════ */
  
-function onNameType() {
-  clearTimeout(searchTimer);
-  const name = document.getElementById("f-name").value.trim();
-  if (name.length < 2) { closeResults(); return; }
-  searchTimer = setTimeout(() => triggerSearch(), 700);
+// Only trigger search on Enter key — never on oninput
+function onNameKey(e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    triggerSearch();
+  }
 }
  
 async function triggerSearch() {
@@ -308,15 +309,11 @@ function showResults(characters) {
  
 function selectCharacter(c) {
   const imageUrl = c.images?.jpg?.image_url || "";
-  document.getElementById("f-name").value  = c.name;
+  // Only fill image URL, do NOT overwrite the name the user typed
   document.getElementById("f-image").value = imageUrl;
   closeResults();
- 
-  if (imageUrl) {
-    setPreviewImage(imageUrl, c.name);
-  } else {
-    setPreviewState("failed", "No image");
-  }
+  if (imageUrl) setPreviewImage(imageUrl, c.name);
+  else setPreviewState("failed", "No image");
 }
  
 function setPreviewImage(url, name) {
@@ -470,10 +467,6 @@ document.addEventListener("click", e => {
   if (!e.target.closest(".sidebar")) closeResults();
 });
  
-loadCharacters();
-</script>
-</body>
-</html>
 loadCharacters();
 </script>
 </body>
