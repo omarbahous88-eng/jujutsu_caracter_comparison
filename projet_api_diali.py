@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.responses import FileResponse
 
 from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(title="Jujutsu Kaisen Character Manager")
@@ -44,7 +45,9 @@ def remove_caracter(caracter_name :str):
             del caracters[index]
             return f"caracter deleted"
     return f"caracter not found"
-
+@app.get("/")
+async def serve_home():
+    return FileResponse('index.html')
 
 
 
