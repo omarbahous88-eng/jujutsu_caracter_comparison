@@ -290,13 +290,16 @@ async function triggerSearch() {
   }
 }
  
+let _searchResults = [];
+ 
 function showResults(characters) {
+  _searchResults = characters;
   const box = document.getElementById("search-results");
-  box.innerHTML = characters.map(c => {
+  box.innerHTML = characters.map((c, i) => {
     const img   = c.images?.jpg?.image_url || "";
     const anime = c.anime?.[0]?.anime?.title || "";
     return `
-    <div class="sr-item" onclick="selectCharacter(${JSON.stringify(c).replace(/"/g,'&quot;')})">
+    <div class="sr-item" onclick="selectCharacter(${i})">
       <img class="sr-thumb" src="${escHtml(img)}" alt="" onerror="this.src=''"/>
       <div>
         <div class="sr-name">${escHtml(c.name)}</div>
@@ -307,9 +310,10 @@ function showResults(characters) {
   box.classList.add("open");
 }
  
-function selectCharacter(c) {
+function selectCharacter(i) {
+  const c = _searchResults[i];
+  if (!c) return;
   const imageUrl = c.images?.jpg?.image_url || "";
-  // Only fill image URL, do NOT overwrite the name the user typed
   document.getElementById("f-image").value = imageUrl;
   closeResults();
   if (imageUrl) setPreviewImage(imageUrl, c.name);
