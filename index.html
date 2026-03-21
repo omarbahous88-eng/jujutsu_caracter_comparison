@@ -7,336 +7,181 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --bg:       #07070f;
-  --panel:    #0e0e1c;
-  --card:     #111122;
-  --border:   rgba(255,255,255,0.06);
-  --red:      #e11d48;
-  --red-glow: rgba(225,29,72,0.25);
-  --blue:     #2563eb;
-  --gold:     #f59e0b;
-  --green:    #10b981;
-  --txt:      #dde1f0;
-  --muted:    #555875;
-  --dim:      #23233a;
+  --bg:#07070f;--panel:#0e0e1c;--card:#111122;
+  --border:rgba(255,255,255,0.06);
+  --red:#e11d48;--red-glow:rgba(225,29,72,0.22);
+  --gold:#f59e0b;--green:#10b981;
+  --txt:#dde1f0;--muted:#555875;--dim:#23233a;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  background:var(--bg);
-  color:var(--txt);
-  font-family:'Barlow',sans-serif;
-  font-size:15px;
-  min-height:100vh;
-  overflow-x:hidden;
-}
+body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden}
 
-/* ── scanline texture ── */
-body::before{
-  content:'';
-  position:fixed;inset:0;
-  background:repeating-linear-gradient(
-    0deg,
-    transparent,transparent 2px,
-    rgba(0,0,0,0.08) 2px,rgba(0,0,0,0.08) 4px
-  );
-  pointer-events:none;z-index:0;
-}
+/* scanlines */
+body::before{content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px);
+  pointer-events:none;z-index:0}
 
-/* ── red haze top-left ── */
-body::after{
-  content:'';
-  position:fixed;top:-300px;left:-200px;
-  width:700px;height:700px;
-  background:radial-gradient(circle,rgba(225,29,72,0.09) 0%,transparent 65%);
-  pointer-events:none;z-index:0;
-  animation:haze 10s ease-in-out infinite alternate;
-}
-@keyframes haze{to{transform:translate(80px,60px) scale(1.1)}}
+/* ambient glow */
+body::after{content:'';position:fixed;top:-250px;left:-200px;width:650px;height:650px;
+  background:radial-gradient(circle,rgba(225,29,72,0.08) 0%,transparent 65%);
+  pointer-events:none;z-index:0;animation:haze 12s ease-in-out infinite alternate}
+@keyframes haze{to{transform:translate(80px,60px) scale(1.12)}}
 
 /* ── HEADER ── */
-header{
-  position:relative;z-index:10;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:20px 40px;
-  border-bottom:1px solid var(--border);
-  background:rgba(14,14,28,0.9);
-  backdrop-filter:blur(12px);
-}
-.logo{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:2rem;
-  letter-spacing:0.08em;
-  color:#fff;
-  display:flex;align-items:center;gap:12px;
-}
-.logo span{
-  color:var(--red);
-  font-size:2.4rem;
-  line-height:1;
-  filter:drop-shadow(0 0 10px var(--red));
-}
-.header-sub{
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:0.75rem;
-  letter-spacing:0.3em;
-  text-transform:uppercase;
-  color:var(--muted);
-}
+header{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;
+  padding:18px 40px;border-bottom:1px solid var(--border);
+  background:rgba(14,14,28,0.9);backdrop-filter:blur(12px)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.08em;color:#fff;display:flex;align-items:center;gap:10px}
+.logo span{color:var(--red);font-size:2.4rem;line-height:1;filter:drop-shadow(0 0 10px var(--red))}
+.header-sub{font-family:'Barlow Condensed',sans-serif;font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
 
 /* ── LAYOUT ── */
-.layout{
-  position:relative;z-index:10;
-  display:grid;
-  grid-template-columns:340px 1fr;
-  gap:0;
-  min-height:calc(100vh - 65px);
-}
+.layout{position:relative;z-index:10;display:grid;grid-template-columns:350px 1fr;min-height:calc(100vh - 63px)}
 
 /* ── SIDEBAR ── */
-.sidebar{
-  background:var(--panel);
-  border-right:1px solid var(--border);
-  padding:28px 24px;
-  display:flex;flex-direction:column;gap:20px;
-  position:sticky;top:0;height:calc(100vh - 65px);
-  overflow-y:auto;
-}
+.sidebar{background:var(--panel);border-right:1px solid var(--border);padding:26px 22px;
+  display:flex;flex-direction:column;gap:16px;
+  position:sticky;top:0;height:calc(100vh - 63px);overflow-y:auto}
 
-.panel-title{
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:0.7rem;
-  font-weight:800;
-  letter-spacing:0.25em;
-  text-transform:uppercase;
-  color:var(--muted);
-  display:flex;align-items:center;gap:10px;
-}
-.panel-title::before{
-  content:'';width:3px;height:14px;
-  background:var(--red);
-  border-radius:2px;
-  box-shadow:0 0 8px var(--red);
-}
+.panel-title{font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:800;
+  letter-spacing:.25em;text-transform:uppercase;color:var(--muted);
+  display:flex;align-items:center;gap:10px}
+.panel-title::before{content:'';width:3px;height:14px;background:var(--red);border-radius:2px;box-shadow:0 0 8px var(--red)}
 
-.field{display:flex;flex-direction:column;gap:5px}
-.field label{
-  font-size:0.72rem;font-weight:600;
-  letter-spacing:0.1em;text-transform:uppercase;
-  color:var(--muted);
-}
-.field input{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:6px;
-  color:var(--txt);
-  font-family:'Barlow',sans-serif;
-  font-size:0.95rem;font-weight:500;
-  padding:9px 13px;outline:none;
-  transition:border-color .2s,box-shadow .2s;
-  width:100%;
-}
-.field input:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--red-glow)}
-.field input[readonly]{color:var(--muted);font-size:0.8rem}
-
-.divider{height:1px;background:var(--border);margin:4px 0}
-
-/* ── BUTTONS ── */
-.btn{
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:0.85rem;font-weight:800;
-  letter-spacing:0.12em;text-transform:uppercase;
-  padding:10px 18px;border:none;border-radius:6px;
-  cursor:pointer;transition:all .2s;
-  display:inline-flex;align-items:center;justify-content:center;gap:7px;
-  width:100%;
-}
-.btn-add{
-  background:var(--red);color:#fff;
-  box-shadow:0 4px 20px var(--red-glow);
-}
-.btn-add:hover{filter:brightness(1.15);transform:translateY(-1px)}
-.btn-refresh{
-  background:var(--dim);color:var(--txt);
-  border:1px solid var(--border);
-}
-.btn-refresh:hover{border-color:var(--muted);color:#fff}
-
-/* ── IMAGE PREVIEW ── */
+/* image preview box */
 .img-preview{
-  width:100%;aspect-ratio:16/9;
-  background:var(--card);border:1px solid var(--border);border-radius:8px;
+  width:100%;aspect-ratio:4/3;
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
   overflow:hidden;display:flex;align-items:center;justify-content:center;
-  font-size:2.5rem;opacity:0.3;
+  position:relative;font-size:2.8rem;color:rgba(255,255,255,0.08);
+  transition:border-color .3s}
+.img-preview.loading{border-color:var(--gold)}
+.img-preview.found {border-color:var(--green)}
+.img-preview.failed{border-color:var(--red)}
+.img-preview img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+.img-status{
+  position:absolute;bottom:0;left:0;right:0;
+  background:rgba(7,7,15,0.85);backdrop-filter:blur(6px);
+  font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:5px 10px;text-align:center;
   transition:opacity .3s;
 }
-.img-preview img{width:100%;height:100%;object-fit:cover;opacity:1}
-.img-preview.has-img{opacity:1}
+.img-status.hide{opacity:0}
 
-/* ── MAIN AREA ── */
-.roster{
-  padding:28px 32px;
-  overflow-y:auto;
+.spinner{
+  width:28px;height:28px;border:3px solid rgba(255,255,255,0.08);
+  border-top-color:var(--gold);border-radius:50%;
+  animation:spin .7s linear infinite;position:absolute
 }
+@keyframes spin{to{transform:rotate(360deg)}}
 
-.roster-header{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:24px;
-}
-.roster-title{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:1.6rem;letter-spacing:0.06em;
-  color:#fff;
-}
-.count-badge{
-  background:var(--dim);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:4px 14px;
-  font-size:0.78rem;font-weight:600;
-  color:var(--muted);
-}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.field input{
+  background:var(--card);border:1px solid var(--border);border-radius:6px;
+  color:var(--txt);font-family:'Barlow',sans-serif;font-size:.95rem;font-weight:500;
+  padding:9px 13px;outline:none;width:100%;
+  transition:border-color .2s,box-shadow .2s}
+.field input:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--red-glow)}
+.field input[readonly]{color:var(--muted);font-size:.78rem;cursor:default}
 
-/* ── CARDS GRID ── */
-#cards-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-  gap:18px;
-}
+.img-url-row{display:flex;gap:8px;align-items:flex-end}
+.img-url-row .field{flex:1}
+.btn-wiki{
+  background:var(--dim);border:1px solid var(--border);border-radius:6px;
+  color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:.75rem;
+  font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  padding:9px 12px;cursor:pointer;white-space:nowrap;
+  transition:all .2s;flex-shrink:0}
+.btn-wiki:hover{background:rgba(245,158,11,.15);border-color:var(--gold)}
 
-/* ── CHARACTER CARD ── */
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:10px;overflow:hidden;
-  position:relative;
+.divider{height:1px;background:var(--border)}
+
+.btn{font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:800;
+  letter-spacing:.12em;text-transform:uppercase;padding:10px 18px;border:none;
+  border-radius:6px;cursor:pointer;transition:all .2s;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;width:100%}
+.btn-add{background:var(--red);color:#fff;box-shadow:0 4px 20px var(--red-glow)}
+.btn-add:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.btn-refresh{background:var(--dim);color:var(--txt);border:1px solid var(--border)}
+.btn-refresh:hover{border-color:var(--muted);color:#fff}
+
+/* ── ROSTER ── */
+.roster{padding:28px 32px;overflow-y:auto}
+.roster-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.roster-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.06em;color:#fff}
+.count-badge{background:var(--dim);border:1px solid var(--border);border-radius:20px;
+  padding:4px 14px;font-size:.78rem;font-weight:600;color:var(--muted)}
+
+/* ── CARDS ── */
+#cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;position:relative;
   transition:transform .25s,box-shadow .25s,border-color .25s;
-  animation:cardIn .35s ease both;
-}
-@keyframes cardIn{
-  from{opacity:0;transform:translateY(16px)}
-  to{opacity:1;transform:translateY(0)}
-}
-.card:hover{
-  transform:translateY(-5px);
-  border-color:rgba(225,29,72,0.35);
-  box-shadow:0 12px 40px rgba(225,29,72,0.12);
-}
+  animation:cardIn .35s ease both}
+@keyframes cardIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.card:hover{transform:translateY(-5px);border-color:rgba(225,29,72,.35);box-shadow:0 12px 40px rgba(225,29,72,.12)}
 
-.card-img{
-  width:100%;aspect-ratio:3/2;
-  background:linear-gradient(135deg,#0d0d1e,#1a0a18);
-  position:relative;overflow:hidden;
-  display:flex;align-items:center;justify-content:center;
-  font-size:3.5rem;color:rgba(255,255,255,0.06);
-}
-.card-img img{
-  position:absolute;inset:0;
-  width:100%;height:100%;object-fit:cover;
-  transition:transform .4s;
-}
+.card-img{width:100%;aspect-ratio:3/2;background:linear-gradient(135deg,#0d0d1e,#1a0a18);
+  position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  font-size:3rem;color:rgba(255,255,255,0.05)}
+.card-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s}
 .card:hover .card-img img{transform:scale(1.06)}
-.card-img::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(180deg,transparent 50%,var(--card) 100%);
-}
-.type-tag{
-  position:absolute;top:10px;left:10px;z-index:2;
-  background:rgba(7,7,15,0.8);
-  border:1px solid var(--border);
-  backdrop-filter:blur(6px);
-  border-radius:4px;
-  font-size:0.65rem;font-weight:700;
-  letter-spacing:0.1em;text-transform:uppercase;
-  color:var(--gold);padding:3px 9px;
-}
+.card-img::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 50%,var(--card) 100%)}
+.type-tag{position:absolute;top:10px;left:10px;z-index:2;
+  background:rgba(7,7,15,.8);border:1px solid var(--border);backdrop-filter:blur(6px);
+  border-radius:4px;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--gold);padding:3px 9px}
 
 .card-body{padding:14px 16px 16px}
-.card-name{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:1.25rem;letter-spacing:0.05em;
-  color:#fff;margin-bottom:12px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
+.card-name{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;letter-spacing:.05em;
+  color:#fff;margin-bottom:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .stats{display:flex;gap:8px;margin-bottom:14px}
-.stat{
-  flex:1;
-  background:rgba(255,255,255,0.03);
-  border:1px solid var(--border);
-  border-radius:6px;
-  padding:7px 4px;text-align:center;
-}
-.stat-lbl{font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.stat{flex:1;background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:6px;padding:7px 4px;text-align:center}
+.stat-lbl{font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
 .stat-val{font-size:1.05rem;font-weight:700}
-.stat-val.hp {color:#34d399}
-.stat-val.atk{color:#f87171}
-.stat-val.def{color:#60a5fa}
+.stat-val.hp{color:#34d399}.stat-val.atk{color:#f87171}.stat-val.def{color:#60a5fa}
 
 .card-btns{display:flex;gap:8px}
-.cbtn{
-  flex:1;font-family:'Barlow Condensed',sans-serif;
-  font-size:0.75rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;
-  padding:7px 6px;border:none;border-radius:5px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:5px;
-  transition:all .2s;
-}
-.cbtn-cmp{background:rgba(245,158,11,0.12);color:var(--gold);border:1px solid rgba(245,158,11,0.25)}
-.cbtn-cmp:hover{background:rgba(245,158,11,0.22)}
-.cbtn-del{background:rgba(225,29,72,0.1);color:#f87171;border:1px solid rgba(225,29,72,0.2)}
-.cbtn-del:hover{background:rgba(225,29,72,0.2)}
+.cbtn{flex:1;font-family:'Barlow Condensed',sans-serif;font-size:.75rem;font-weight:800;
+  letter-spacing:.1em;text-transform:uppercase;padding:7px 6px;border:none;border-radius:5px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .2s}
+.cbtn-cmp{background:rgba(245,158,11,.12);color:var(--gold);border:1px solid rgba(245,158,11,.25)}
+.cbtn-cmp:hover{background:rgba(245,158,11,.22)}
+.cbtn-del{background:rgba(225,29,72,.1);color:#f87171;border:1px solid rgba(225,29,72,.2)}
+.cbtn-del:hover{background:rgba(225,29,72,.2)}
 
-/* ── RESULT BANNER ── */
-#result-banner{
-  display:none;
-  position:fixed;top:80px;left:50%;transform:translateX(-50%);
-  z-index:9999;
-  min-width:340px;max-width:90vw;
-  border-radius:10px;
-  padding:16px 24px;
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:1.3rem;font-weight:800;letter-spacing:0.06em;
-  text-align:center;
-  box-shadow:0 16px 48px rgba(0,0,0,0.6);
-  animation:bannerIn .3s cubic-bezier(.34,1.56,.64,1);
-}
-@keyframes bannerIn{from{opacity:0;transform:translateX(-50%) translateY(-20px) scale(0.9)}}
-#result-banner.win{
-  background:linear-gradient(135deg,#052e16,#14532d);
-  border:1px solid #16a34a;color:#4ade80;
-}
-#result-banner.lose{
-  background:linear-gradient(135deg,#1f0010,#4c0519);
-  border:1px solid var(--red);color:#f87171;
-}
+/* ── BANNER ── */
+#result-banner{display:none;position:fixed;top:80px;left:50%;transform:translateX(-50%);
+  z-index:9999;min-width:340px;max-width:90vw;border-radius:10px;padding:16px 26px;
+  font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.08em;
+  text-align:center;box-shadow:0 16px 48px rgba(0,0,0,.6);
+  animation:bannerIn .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes bannerIn{from{opacity:0;transform:translateX(-50%) translateY(-18px) scale(.9)}}
+#result-banner.win{background:linear-gradient(135deg,#052e16,#14532d);border:1px solid #16a34a;color:#4ade80}
+#result-banner.lose{background:linear-gradient(135deg,#1f0010,#4c0519);border:1px solid var(--red);color:#f87171}
 
 /* ── TOAST ── */
 #toast{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px}
-.toast{
-  background:var(--panel);border:1px solid var(--border);
-  border-left:3px solid var(--red);
-  border-radius:6px;padding:10px 16px;
-  font-size:0.88rem;font-weight:600;
-  max-width:280px;
-  box-shadow:0 6px 24px rgba(0,0,0,0.5);
-  animation:toastIn .25s ease;
-}
-.toast.ok{border-left-color:var(--green)}
-.toast.warn{border-left-color:var(--gold)}
+.toast{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--red);
+  border-radius:6px;padding:10px 16px;font-size:.88rem;font-weight:600;max-width:280px;
+  box-shadow:0 6px 24px rgba(0,0,0,.5);animation:toastIn .25s ease}
+.toast.ok{border-left-color:var(--green)}.toast.warn{border-left-color:var(--gold)}
 @keyframes toastIn{from{opacity:0;transform:translateX(20px)}}
 
 /* ── EMPTY ── */
-.empty{
-  grid-column:1/-1;text-align:center;
-  padding:60px 20px;color:var(--muted);
-}
+.empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted)}
 .empty .ei{font-size:3rem;margin-bottom:14px;display:block;opacity:.3}
 
-/* scrollbar */
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--dim);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:var(--muted)}
 
 @media(max-width:768px){
   .layout{grid-template-columns:1fr}
@@ -349,7 +194,7 @@ header{
 <body>
 
 <header>
-  <div class="logo"><span>呪</span> Jujutsu Kaisen</div>
+  <div class="logo"><span>呪</span>Jujutsu Kaisen</div>
   <div class="header-sub">Character Manager</div>
 </header>
 
@@ -359,12 +204,15 @@ header{
   <aside class="sidebar">
     <div class="panel-title">Add Character</div>
 
-    <!-- image preview -->
-    <div class="img-preview" id="img-preview">⛩</div>
+    <!-- IMAGE PREVIEW -->
+    <div class="img-preview" id="img-preview">
+      <span id="preview-icon">⛩</span>
+      <div class="img-status hide" id="img-status"></div>
+    </div>
 
     <div class="field">
       <label>Name</label>
-      <input id="f-name" type="text" placeholder="Gojo" oninput="onNameInput()"/>
+      <input id="f-name" type="text" placeholder="Gojo Satoru" oninput="onNameInput()"/>
     </div>
     <div class="field">
       <label>Type</label>
@@ -382,9 +230,13 @@ header{
       <label>Defence</label>
       <input id="f-defence" type="number" placeholder="4000" min="0"/>
     </div>
-    <div class="field">
-      <label>Image URL (auto)</label>
-      <input id="f-image" type="text" readonly placeholder="jujutsu_kaisen_….png"/>
+
+    <div class="img-url-row">
+      <div class="field">
+        <label>Image URL</label>
+        <input id="f-image" type="text" placeholder="Recherche auto…" oninput="onImageUrlManual()"/>
+      </div>
+      <button class="btn-wiki" onclick="searchImageNow()" title="Chercher sur Wikipedia">🔍 Wiki</button>
     </div>
 
     <div class="divider"></div>
@@ -402,56 +254,143 @@ header{
       <div class="empty"><span class="ei">⛩</span>Loading roster…</div>
     </div>
   </section>
-
 </div>
 
-<!-- RESULT BANNER -->
 <div id="result-banner"></div>
-
-<!-- TOAST -->
 <div id="toast"></div>
 
 <script>
 const API = "https://jujutsu-caracter-comparison.onrender.com";
+let searchTimer = null;
+let currentImageUrl = "";
 
-/* ── Auto image + preview ── */
+/* ════════════════════════════════════════
+   IMAGE AUTO-SEARCH  (Wikipedia API)
+   ════════════════════════════════════════ */
+
 function onNameInput() {
   const name = document.getElementById("f-name").value.trim();
-  const slug = name.toLowerCase().replace(/\s+/g, "_");
-  const url  = slug ? `jujutsu_kaisen_${slug}.png` : "";
+  clearTimeout(searchTimer);
+
+  if (!name) {
+    resetPreview();
+    document.getElementById("f-image").value = "";
+    return;
+  }
+
+  // debounce 600ms
+  searchTimer = setTimeout(() => searchWikipediaImage(name), 600);
+}
+
+function onImageUrlManual() {
+  const url = document.getElementById("f-image").value.trim();
+  if (url) setPreviewImage(url);
+  else resetPreview();
+}
+
+function searchImageNow() {
+  const name = document.getElementById("f-name").value.trim();
+  if (!name) { toast("Tape un nom d'abord.", "warn"); return; }
+  searchWikipediaImage(name);
+}
+
+async function searchWikipediaImage(query) {
+  setPreviewLoading();
+
+  // Strategy 1: Wikipedia REST API thumbnail
+  const wikified = query.trim().replace(/\s+/g, "_");
+  const wikiUrl  = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wikified)}`;
+
+  try {
+    const res  = await fetch(wikiUrl, { headers: { "Accept": "application/json" } });
+    const data = await res.json();
+
+    if (data.thumbnail && data.thumbnail.source) {
+      const imgUrl = data.thumbnail.source.replace(/\/\d+px-/, "/400px-");
+      setPreviewFound(imgUrl, "Wikipedia");
+      return;
+    }
+  } catch {}
+
+  // Strategy 2: Wikipedia OpenSearch → page image
+  try {
+    const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(query)}&prop=pageimages&format=json&pithumbsize=400&origin=*`;
+    const res  = await fetch(searchUrl);
+    const data = await res.json();
+    const pages = data.query.pages;
+    const page  = Object.values(pages)[0];
+
+    if (page && page.thumbnail && page.thumbnail.source) {
+      setPreviewFound(page.thumbnail.source, "Wikipedia");
+      return;
+    }
+  } catch {}
+
+  // Strategy 3: Wikimedia Commons search
+  try {
+    const commonsUrl = `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(query + " jujutsu kaisen")}&gsrnamespace=6&prop=imageinfo&iiprop=url&iiurlwidth=400&format=json&origin=*`;
+    const res  = await fetch(commonsUrl);
+    const data = await res.json();
+
+    if (data.query && data.query.pages) {
+      const pages = Object.values(data.query.pages);
+      const found = pages.find(p => p.imageinfo && p.imageinfo[0] && p.imageinfo[0].thumburl);
+      if (found) {
+        setPreviewFound(found.imageinfo[0].thumburl, "Wikimedia");
+        return;
+      }
+    }
+  } catch {}
+
+  // Strategy 4: DuckDuckGo favicon / Wikidata (fallback to placeholder)
+  // Use a reliable anime-themed placeholder with the character name
+  const placeholder = `https://via.placeholder.com/400x300/111122/e11d48?text=${encodeURIComponent(query)}`;
+  setPreviewFailed(placeholder, query);
+}
+
+/* ── Preview state helpers ── */
+function setPreviewLoading() {
+  const box    = document.getElementById("img-preview");
+  const icon   = document.getElementById("preview-icon");
+  const status = document.getElementById("img-status");
+  box.innerHTML = `<div class="spinner"></div><div class="img-status" id="img-status" style="color:var(--gold)">Searching…</div>`;
+  box.className = "img-preview loading";
+}
+
+function setPreviewFound(url, source) {
+  currentImageUrl = url;
   document.getElementById("f-image").value = url;
 
   const box = document.getElementById("img-preview");
-  if (url) {
-    box.innerHTML = `<img src="${url}" alt="${escHtml(name)}" onerror="this.parentElement.innerHTML='⛩';this.parentElement.classList.remove('has-img')"/>`;
-    box.classList.add("has-img");
-  } else {
-    box.innerHTML = "⛩";
-    box.classList.remove("has-img");
-  }
+  box.className = "img-preview found";
+  box.innerHTML = `
+    <img src="${escHtml(url)}" alt="preview"
+         onerror="this.parentElement.classList.remove('found');this.parentElement.classList.add('failed');this.remove()"/>
+    <div class="img-status" style="color:var(--green)">✓ ${escHtml(source)}</div>`;
 }
 
-/* ── Toast ── */
-function toast(msg, type="err") {
-  const wrap = document.getElementById("toast");
-  const el = document.createElement("div");
-  el.className = `toast ${type}`;
-  el.textContent = msg;
-  wrap.appendChild(el);
-  setTimeout(() => el.remove(), 3500);
+function setPreviewFailed(placeholderUrl, name) {
+  currentImageUrl = placeholderUrl;
+  document.getElementById("f-image").value = placeholderUrl;
+
+  const box = document.getElementById("img-preview");
+  box.className = "img-preview failed";
+  box.innerHTML = `
+    <img src="${escHtml(placeholderUrl)}" alt="${escHtml(name)}"/>
+    <div class="img-status" style="color:#f87171">⚠ Not found — placeholder</div>`;
 }
 
-/* ── Result banner ── */
-function showBanner(msg) {
-  const b = document.getElementById("result-banner");
-  const win = msg.startsWith("hoho");
-  b.className = `result-banner ${win ? "win" : "lose"}`;
-  b.style.display = "block";
-  b.textContent = msg;
-  setTimeout(() => { b.style.display = "none"; }, 4000);
+function resetPreview() {
+  currentImageUrl = "";
+  const box = document.getElementById("img-preview");
+  box.className = "img-preview";
+  box.innerHTML = `<span id="preview-icon">⛩</span><div class="img-status hide" id="img-status"></div>`;
 }
 
-/* ── Load ── */
+/* ════════════════════════════════════════
+   API CALLS
+   ════════════════════════════════════════ */
+
 async function loadCharacters() {
   const grid = document.getElementById("cards-grid");
   grid.innerHTML = `<div class="empty"><span class="ei">⛩</span>Loading…</div>`;
@@ -464,12 +403,10 @@ async function loadCharacters() {
   }
 }
 
-/* ── Render ── */
 function renderCards(list) {
-  const grid  = document.getElementById("cards-grid");
-  const badge = document.getElementById("count-badge");
-  badge.textContent = `${list.length} character${list.length !== 1 ? "s" : ""}`;
-
+  document.getElementById("count-badge").textContent =
+    `${list.length} character${list.length !== 1 ? "s" : ""}`;
+  const grid = document.getElementById("cards-grid");
   if (!list.length) {
     grid.innerHTML = `<div class="empty"><span class="ei">⛩</span>No characters yet.</div>`;
     return;
@@ -478,12 +415,12 @@ function renderCards(list) {
 }
 
 function cardHTML(c, i) {
-  const delay = `animation-delay:${i * 60}ms`;
-  const img   = c.image_url
-    ? `<img src="${escHtml(c.image_url)}" alt="${escHtml(c.name)}" onerror="this.style.display='none'"/>`
+  const img = c.image_url
+    ? `<img src="${escHtml(c.image_url)}" alt="${escHtml(c.name)}"
+           onerror="this.style.display='none'"/>`
     : "";
   return `
-  <div class="card" style="${delay}">
+  <div class="card" style="animation-delay:${i * 55}ms">
     <div class="card-img">
       ⛩${img}
       <div class="type-tag">${escHtml(c.type)}</div>
@@ -503,67 +440,81 @@ function cardHTML(c, i) {
   </div>`;
 }
 
-/* ── Add ── */
 async function addCharacter() {
-  const name    = document.getElementById("f-name").value.trim();
-  const type    = document.getElementById("f-type").value.trim();
-  const HP      = parseInt(document.getElementById("f-hp").value);
-  const attack  = parseInt(document.getElementById("f-attack").value);
-  const defence = parseInt(document.getElementById("f-defence").value);
+  const name      = document.getElementById("f-name").value.trim();
+  const type      = document.getElementById("f-type").value.trim();
+  const HP        = parseInt(document.getElementById("f-hp").value);
+  const attack    = parseInt(document.getElementById("f-attack").value);
+  const defence   = parseInt(document.getElementById("f-defence").value);
   const image_url = document.getElementById("f-image").value.trim();
 
   if (!name || !type || isNaN(HP) || isNaN(attack) || isNaN(defence)) {
     toast("Fill in all fields.", "err"); return;
   }
   try {
-    const res = await fetch(`${API}/caracters/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    await fetch(`${API}/caracters/`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
       body: JSON.stringify({ name, type, HP, attack, defence, image_url })
     });
-    await res.json();
     toast(`${name} added!`, "ok");
     clearForm();
     loadCharacters();
   } catch { toast("Network error.", "err"); }
 }
 
-/* ── Compare ── */
 async function compare(name) {
   try {
-    const res  = await fetch(`${API}/caracters/${encodeURIComponent(name)}`, { method: "PUT" });
+    const res  = await fetch(`${API}/caracters/${encodeURIComponent(name)}`, { method:"PUT" });
     const data = await res.json();
-    // API returns a plain string
     const msg  = typeof data === "string" ? data : JSON.stringify(data);
     showBanner(msg);
   } catch { toast("Network error.", "err"); }
 }
 
-/* ── Delete ── */
 async function remove(name) {
   if (!confirm(`Delete ${name}?`)) return;
   try {
-    const res  = await fetch(`${API}/caracters/${encodeURIComponent(name)}`, { method: "DELETE" });
+    const res  = await fetch(`${API}/caracters/${encodeURIComponent(name)}`, { method:"DELETE" });
     const data = await res.json();
-    const msg  = typeof data === "string" ? data : JSON.stringify(data);
-    toast(msg, "warn");
+    toast(typeof data === "string" ? data : "Deleted.", "warn");
     loadCharacters();
   } catch { toast("Network error.", "err"); }
 }
 
-/* ── Helpers ── */
-function clearForm() {
-  ["f-name","f-type","f-hp","f-attack","f-defence","f-image"].forEach(id => {
-    document.getElementById(id).value = "";
-  });
-  document.getElementById("img-preview").innerHTML = "⛩";
-  document.getElementById("img-preview").classList.remove("has-img");
+/* ════════════════════════════════════════
+   UI HELPERS
+   ════════════════════════════════════════ */
+
+function showBanner(msg) {
+  const b = document.getElementById("result-banner");
+  b.className = msg.startsWith("hoho") ? "win" : "lose";
+  b.style.display = "block";
+  b.textContent = msg;
+  setTimeout(() => b.style.display = "none", 4200);
 }
+
+function toast(msg, type = "err") {
+  const wrap = document.getElementById("toast");
+  const el   = document.createElement("div");
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+function clearForm() {
+  ["f-name","f-type","f-hp","f-attack","f-defence","f-image"].forEach(id =>
+    document.getElementById(id).value = "");
+  resetPreview();
+}
+
 function escHtml(s) {
   return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 function escJs(s) { return String(s).replace(/'/g,"\\'"); }
 
+/* ── INIT ── */
 loadCharacters();
 </script>
 </body>
