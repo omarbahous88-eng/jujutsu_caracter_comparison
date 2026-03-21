@@ -269,9 +269,9 @@ async function triggerSearch() {
   setPreviewState("loading", "Searching…");
  
   try {
-    // Search Jukan for characters matching the name
-    const url  = `https://api.jikan.moe/v4/characters?q=${encodeURIComponent(name)}&limit=6`;
-    const res  = await fetch(url);
+    // Step 1: search characters by name
+    const searchUrl = `https://api.jikan.moe/v4/characters?q=${encodeURIComponent(name)}&limit=6`;
+    const res  = await fetch(searchUrl);
     const data = await res.json();
  
     if (!data.data || data.data.length === 0) {
@@ -280,10 +280,27 @@ async function triggerSearch() {
       return;
     }
  
-    showResults(data.data);
+    // Step 2: for each result, fetch the /pictures endpoint to get real image URLs
+    const enriched = await Promise.all(data.data.map(async (c) => {
+      try {
+        const picRes  = await fetch(`https://api.jikan.moe/v4/characters/${c.mal_id}/pictures`);
+        const picData = await picRes.json();
+        const pics    = picData.data || [];
+        // Use first picture's jpg large, or fall back to webp, or the thumbnail
+        c._picUrl = (pics[0]?.jpg?.large_image_url)
+                 || (pics[0]?.jpg?.image_url)
+                 || (pics[0]?.webp?.large_image_url)
+                 || c.images?.jpg?.image_url
+                 || "";
+      } catch {
+        c._picUrl = c.images?.jpg?.image_url || "";
+      }
+      return c;
+    }));
  
-    // Auto-select first result
-    selectCharacter(data.data[0]);
+    showResults(enriched);
+    // Auto-select first
+    selectCharacterObj(enriched[0]);
  
   } catch (e) {
     setPreviewState("failed", "API error");
@@ -296,7 +313,7 @@ function showResults(characters) {
   _searchResults = characters;
   const box = document.getElementById("search-results");
   box.innerHTML = characters.map((c, i) => {
-    const img   = c.images?.jpg?.image_url || "";
+    const img   = c._picUrl || c.images?.jpg?.image_url || "";
     const anime = c.anime?.[0]?.anime?.title || "";
     return `
     <div class="sr-item" onclick="selectCharacter(${i})">
@@ -313,7 +330,11 @@ function showResults(characters) {
 function selectCharacter(i) {
   const c = _searchResults[i];
   if (!c) return;
-  const imageUrl = c.images?.jpg?.image_url || "";
+  selectCharacterObj(c);
+}
+ 
+function selectCharacterObj(c) {
+  const imageUrl = c._picUrl || c.images?.jpg?.image_url || "";
   document.getElementById("f-image").value = imageUrl;
   closeResults();
   if (imageUrl) setPreviewImage(imageUrl, c.name);
@@ -471,6 +492,10 @@ document.addEventListener("click", e => {
   if (!e.target.closest(".sidebar")) closeResults();
 });
  
+loadCharacters();
+</script>
+</body>
+</html> 
 loadCharacters();
 </script>
 </body>
