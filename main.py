@@ -20,7 +20,7 @@ class caracter(BaseModel):
     attack : int 
     defence : int 
     image_url: str
-caracters=[caracter(HP=3000,name="Gojo",type="sorcer",attack=5000,defence=4000,image_url="jujutsu_kaisen_gojo.png")]
+caracters=[caracter(HP=3000,name="Gojo",type="sorcer",attack=5000,defence=4000,image_url="https://pinkcrow.net/wp-content/uploads/2025/09/Satoru_Gojo_arrives_on_the_battlefield_29-1.jpg")]
 @app.get("/caracters/")
 def readcaracters():
     return caracters
