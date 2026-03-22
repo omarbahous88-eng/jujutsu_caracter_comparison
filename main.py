@@ -9,7 +9,7 @@ import os
 
 # --- CONFIGURATION BASE DE DONNÉES ---
 # Remplace XXXXX par ton vrai lien (ex: mysql+pymysql://user:pass@host/db)
-DATABASE_URL = "XXXXX".replace("mysql://", "mysql+pymysql://")
+DATABASE_URL = "mysql://3LpbZJwNF2CTBD7.root:kpPsa33ElkWoW5Go@gateway01.eu-central-1.prod.aws.tidbcloud.com:4000/sys".replace("mysql://", "mysql+pymysql://")
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
