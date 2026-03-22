@@ -1,54 +1,104 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel
-from fastapi.responses import FileResponse
-
 from fastapi.middleware.cors import CORSMiddleware
-app = FastAPI(title="Jujutsu Kaisen Character Manager")
- 
+from fastapi.responses import FileResponse
+from sqlalchemy import create_engine, Column, Integer, String, Text
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, Session
+import os
+
+# --- CONFIGURATION BASE DE DONNÉES ---
+# Remplace XXXXX par ton vrai lien (ex: mysql+pymysql://user:pass@host/db)
+DATABASE_URL = "XXXXX".replace("mysql://", "mysql+pymysql://")
+
+engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+# Modèle de la Table SQL
+class CharacterModel(Base):
+    __tablename__ = "characters"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100))
+    type = Column(String(50))
+    HP = Column(Integer)
+    attack = Column(Integer)
+    defence = Column(Integer)
+    image_url = Column(Text)
+
+# Création de la table au démarrage
+Base.metadata.create_all(bind=engine)
+
+# --- CONFIGURATION API ---
+app = FastAPI(title="JJK Manager avec TiDB")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://jujutsu-caracter-comparison.onrender.com"],
-    allow_credentials=True,
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-class caracter(BaseModel):
-    HP :int
-    name : str
-    type : str
-    attack : int 
-    defence : int 
+# Modèle Pydantic pour la validation des données entrantes
+class CaracterSchema(BaseModel):
+    name: str
+    type: str
+    HP: int
+    attack: int
+    defence: int
     image_url: str
-caracters=[caracter(HP=3000,name="Gojo",type="sorcer",attack=5000,defence=4000,image_url="https://pinkcrow.net/wp-content/uploads/2025/09/Satoru_Gojo_arrives_on_the_battlefield_29-1.jpg")]
-@app.get("/caracters/")
-def readcaracters():
-    return caracters
-@app.post("/caracters/")
-def createcaracter(new_caracter : caracter):
-    caracters.append(new_caracter)
-    return caracters
-@app.put("/caracters/{caracter_name}")
-def caracter_comparison( caracter_name:str):
-    attac=0
-    for caracter in caracters:
-        if caracter.name==caracter_name:
-            attac=caracter.attack
-    for caracter in caracters:
-        if caracter.attack>attac:
-            return f"ops {caracter_name} is not the stronger in your liste:("
-    return f"hoho {caracter_name} is the stronger in your liste :)"
-@app.delete("/caracters/{caracter_name}")
-def remove_caracter(caracter_name :str):
-    for index ,caracter in enumerate(caracters):
-        if caracter.name==caracter_name:
-            del caracters[index]
-            return f"caracter deleted"
-    return f"caracter not found"
+
+    class Config:
+        from_attributes = True
+
+# Dépendance pour obtenir la session de base de données
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# --- ROUTES ---
+
 @app.get("/")
 async def serve_home():
+    # Assure-toi que le nom du fichier HTML sur GitHub est bien index.html
     return FileResponse('index.html')
 
+@app.get("/caracters/")
+def read_caracters(db: Session = Depends(get_db)):
+    return db.query(CharacterModel).all()
+
+@app.post("/caracters/")
+def create_caracter(obj: CaracterSchema, db: Session = Depends(get_db)):
+    new_c = CharacterModel(**obj.dict())
+    db.add(new_c)
+    db.commit()
+    db.refresh(new_c)
+    return new_c
+
+@app.put("/caracters/{name}")
+def compare_caracter(name: str, db: Session = Depends(get_db)):
+    target = db.query(CharacterModel).filter(CharacterModel.name == name).first()
+    if not target:
+        return "Personnage non trouvé"
+    
+    max_atk = db.query(CharacterModel).order_by(CharacterModel.attack.desc()).first()
+    
+    if target.attack >= max_atk.attack:
+        return f"hoho {name} est le plus fort de ta liste ! ⛩"
+    else:
+        return f"ops {name} n'est pas le plus fort... {max_atk.name} le dépasse."
+
+@app.delete("/caracters/{name}")
+def delete_caracter(name: str, db: Session = Depends(get_db)):
+    target = db.query(CharacterModel).filter(CharacterModel.name == name).first()
+    if target:
+        db.delete(target)
+        db.commit()
+        return "Supprimé avec succès"
+    return "Non trouvé"
 
 
 
