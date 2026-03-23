@@ -7,15 +7,13 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 import os
 
-# --- CONFIGURATION BASE DE DONNÉES ---
-# Remplace XXXXX par ton vrai lien (ex: mysql+pymysql://user:pass@host/db)
+
 DATABASE_URL = "mysql+pymysql://3LpbZJwNF2CTBD7.root:J43PUXtxIIAK7eVf@gateway01.eu-central-1.prod.aws.tidbcloud.com:4000/jujutsukaisen?ssl_ca=/etc/ssl/certs/ca-certificates.crt"
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# Modèle de la Table SQL
 class CharacterModel(Base):
     __tablename__ = "characters"
     id = Column(Integer, primary_key=True, index=True)
@@ -25,11 +23,7 @@ class CharacterModel(Base):
     attack = Column(Integer)
     defence = Column(Integer)
     image_url = Column(Text)
-
-# Création de la table au démarrage
 Base.metadata.create_all(bind=engine)
-
-# --- CONFIGURATION API ---
 app = FastAPI(title="JJK Manager avec TiDB")
 
 app.add_middleware(
@@ -38,8 +32,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Modèle Pydantic pour la validation des données entrantes
 class CaracterSchema(BaseModel):
     name: str
     type: str
@@ -50,17 +42,12 @@ class CaracterSchema(BaseModel):
 
     class Config:
         from_attributes = True
-
-# Dépendance pour obtenir la session de base de données
 def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
-
-# --- ROUTES ---
-
 @app.get("/")
 async def serve_home():
     # Assure-toi que le nom du fichier HTML sur GitHub est bien index.html
